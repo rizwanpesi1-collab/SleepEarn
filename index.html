@@ -1,174 +1,230 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SleepEarn - Distributed Computing Network</title>
+    <title>SleepEarn - Smart Node Network</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-color: #38bdf8;
-            --success-color: #22c55e;
-            --danger-color: #ef4444;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
+            --bg-gradient: linear-gradient(135deg, #090d16 0%, #1a1c29 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border-glow: rgba(56, 189, 248, 0.2);
+            --accent: #38bdf8;
+            --success: #10b981;
+            --danger: #f43f5e;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            transition: background 0.3s;
+            padding: 20px;
+            transition: background 0.4s ease;
         }
 
-        /* سلیپ موڈ کے لیے بلیک سکرین سائیڈ */
+        /* Sleep Mode Theme (Pure Black for OLED) */
         body.sleep-mode {
-            background-color: #000000;
-            color: #333333;
+            background: #000000 !important;
+            color: #222;
         }
 
-        body.sleep-mode .container {
+        body.sleep-mode .app-card {
             background: #050505;
-            border-color: #111;
+            border: 1px solid #111;
             box-shadow: none;
         }
 
-        body.sleep-mode .status-box {
-            background: #000;
-            border-color: #111;
+        body.sleep-mode .stat-box {
+            background: #0a0a0a;
+            border-color: #151515;
         }
 
-        body.sleep-mode h1, body.sleep-mode .value, body.sleep-mode .label {
+        body.sleep-mode h1, 
+        body.sleep-mode .stat-value, 
+        body.sleep-mode .brand {
             color: #222 !important;
         }
 
-        .container {
+        .app-card {
             background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glow);
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
             text-align: center;
-            box-sizing: border-box;
-            margin: 20px;
-            transition: all 0.3s;
+            transition: all 0.4s ease;
         }
 
-        h1 {
-            color: var(--accent-color);
-            margin-bottom: 5px;
-            font-size: 26px;
-        }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 14px;
+        .header {
             margin-bottom: 25px;
         }
 
-        .status-box {
-            background: var(--bg-color);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            border: 1px solid var(--border-color);
+        .brand {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
-        .status-row {
+        .tagline {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Stats Grid */
+        .stats-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 14px 18px;
+            border-radius: 14px;
             display: flex;
             justify-content: space-between;
-            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-value {
             font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
         }
 
-        .status-row:last-child {
-            margin-bottom: 0;
+        .status-dot {
+            height: 8px;
+            width: 8px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            box-shadow: 0 0 8px var(--danger);
+            transition: 0.3s;
         }
 
-        .label {
-            color: var(--text-muted);
+        .status-dot.active {
+            background-color: var(--success);
+            box-shadow: 0 0 10px var(--success);
         }
 
-        .value {
-            font-weight: bold;
+        .points-highlight {
+            color: #fbbf24 !important;
+            font-size: 18px !important;
         }
 
-        #nodeStatus {
-            color: var(--danger-color);
-        }
-
-        #points {
-            color: #facc15;
+        /* Action Buttons */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .btn {
-            background-color: var(--success-color);
-            color: white;
-            border: none;
-            padding: 14px;
-            font-size: 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
             width: 100%;
-            margin-bottom: 10px;
-            transition: background 0.2s, transform 0.1s;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
         .btn-sleep {
-            background-color: #64748b;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .btn:active {
-            transform: scale(0.98);
+        .btn-sleep:hover {
+            background: rgba(255, 255, 255, 0.12);
         }
 
-        .footer {
-            margin-top: 15px;
+        .btn-test {
+            background: transparent;
+            color: var(--text-secondary);
             font-size: 12px;
-            color: var(--text-muted);
+            padding: 6px;
+            margin-top: 5px;
+            text-decoration: underline;
+        }
+
+        .footer-note {
+            margin-top: 20px;
+            font-size: 11px;
+            color: var(--text-secondary);
         }
     </style>
 </head>
 <body>
 
-    <div class="container" id="mainContainer">
-        <h1>SleepEarn</h1>
-        <div class="subtitle">Distributed Node Dashboard</div>
-        
-        <div class="status-box">
-            <div class="status-row">
-                <span class="label">Charger Status:</span>
-                <span class="value" id="chargerStatus">Checking...</span>
+    <div class="app-card" id="appCard">
+        <div class="header">
+            <div class="brand">SleepEarn</div>
+            <div class="tagline">Distributed Passive Cloud Node</div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <span class="stat-label">Charger Status</span>
+                <span class="stat-value" id="chargerStatus">Detecting...</span>
             </div>
-            <div class="status-row">
-                <span class="label">Node Status:</span>
-                <span class="value" id="nodeStatus">Waiting for Charger</span>
+            
+            <div class="stat-box">
+                <span class="stat-label">Node State</span>
+                <span class="stat-value">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="nodeStateText">Waiting...</span>
+                </span>
             </div>
-            <div class="status-row">
-                <span class="label">Active Time:</span>
-                <span class="value" id="timer">0s</span>
+
+            <div class="stat-box">
+                <span class="stat-label">Active Uptime</span>
+                <span class="stat-value" id="timer">0s</span>
             </div>
-            <div class="status-row">
-                <span class="label">Earned Points:</span>
-                <span class="value" id="points">0</span>
+
+            <div class="stat-box">
+                <span class="stat-label">Total Points</span>
+                <span class="stat-value points-highlight" id="points">0</span>
             </div>
         </div>
 
-        <button class="btn btn-sleep" id="sleepBtn" onclick="toggleSleepMode()">Enable Sleep Mode</button>
-        
-        <div class="footer">
-            Connect charger to start earning points automatically.
+        <div class="btn-group">
+            <button class="btn btn-sleep" id="sleepBtn" onclick="toggleSleepMode()">🌙 Enable Sleep Mode</button>
+            <button class="btn btn-test" onclick="toggleSimulation()">⚡ Test/Simulate Charger</button>
+        </div>
+
+        <div class="footer-note">
+            Connect charger to automatically mine & sync points 24/7.
         </div>
     </div>
 
@@ -177,62 +233,80 @@
         let points = parseInt(localStorage.getItem('se_points')) || 0;
         let isCharging = false;
         let isSleepMode = false;
+        let isSimulated = false;
 
+        // UI Initialization
         document.getElementById('timer').innerText = seconds + 's';
         document.getElementById('points').innerText = points;
 
-        // براؤزر کی بیٹری اور چارجنگ چیک کرنے کا فنکشن
+        // Battery API Integration
         if ('getBattery' in navigator) {
             navigator.getBattery().then(function(battery) {
-                updateBatteryState(battery);
+                if (!isSimulated) updateBatteryUI(battery.charging, battery.level);
                 battery.addEventListener('chargingchange', function() {
-                    updateBatteryState(battery);
+                    if (!isSimulated) updateBatteryUI(battery.charging, battery.level);
                 });
             });
         } else {
-            // اگر براؤزر بیٹری API سپورٹ نہ کرے تو ڈائرैक्ट چارجنگ مان لیں یا ٹیسٹ کے لیے آن رکھیں
-            isCharging = true;
-            document.getElementById('chargerStatus').innerText = "Connected (Simulated)";
-            document.getElementById('nodeStatus').innerText = "Running";
-            document.getElementById('nodeStatus').style.color = "var(--success-color)";
+            // Fallback simulation mode if battery API is restricted
+            setChargingState(true, "Simulated (Connected)");
         }
 
-        function updateBatteryState(battery) {
-            isCharging = battery.charging;
-            let chargerStatusEl = document.getElementById('chargerStatus');
-            let nodeStatusEl = document.getElementById('nodeStatus');
-
-            if (isCharging) {
-                chargerStatusEl.innerText = "Plugged In (" + Math.round(battery.level * 100) + "%)";
-                chargerStatusEl.style.color = "var(--success-color)";
-                nodeStatusEl.innerText = "Running";
-                nodeStatusEl.style.color = "var(--success-color)";
+        function updateBatteryUI(charging, level) {
+            let percent = Math.round(level * 100);
+            if (charging) {
+                setChargingState(true, `Plugged In (${percent}%)`);
             } else {
-                chargerStatusEl.innerText = "Unplugged";
-                chargerStatusEl.style.color = "var(--danger-color)";
-                nodeStatusEl.innerText = "Paused (Plug in charger)";
-                nodeStatusEl.style.color = "var(--danger-color)";
+                setChargingState(false, "Unplugged");
             }
         }
 
-        // ہر ایک سیکنڈ کا لوپ - صرف اس وقت چلے گا جب چارجنگ ہو رہی ہو
+        function setChargingState(charging, text) {
+            isCharging = charging;
+            document.getElementById('chargerStatus').innerText = text;
+            
+            let dot = document.getElementById('statusDot');
+            let stateText = document.getElementById('nodeStateText');
+
+            if (charging) {
+                dot.classList.add('active');
+                stateText.innerText = "Running";
+            } else {
+                dot.classList.remove('active');
+                stateText.innerText = "Paused (Plug in charger)";
+            }
+        }
+
+        // Manual Simulation Toggle for Testing
+        function toggleSimulation() {
+            isSimulated = true;
+            isCharging = !isCharging;
+            if (isCharging) {
+                setChargingState(true, "Manual Test (Active)");
+            } else {
+                setChargingState(false, "Manual Test (Paused)");
+            }
+        }
+
+        // Core Earning Engine (Runs every 1 second)
         setInterval(() => {
             if (isCharging) {
                 seconds++;
                 document.getElementById('timer').innerText = seconds + 's';
                 
-                // ہر 5 سیکنڈ پر 1 پوائنٹ ملے گا
+                // Earn 1 point every 5 seconds of active charging
                 if (seconds % 5 === 0) {
                     points += 1;
                     document.getElementById('points').innerText = points;
                 }
 
+                // Save to LocalStorage
                 localStorage.setItem('se_seconds', seconds);
                 localStorage.setItem('se_points', points);
             }
         }, 1000);
 
-        // سلیپ موڈ آن/آف کرنے کا فنکشن
+        // Sleep Mode (OLED Black Screen)
         function toggleSleepMode() {
             isSleepMode = !isSleepMode;
             let body = document.body;
@@ -240,12 +314,10 @@
 
             if (isSleepMode) {
                 body.classList.add('sleep-mode');
-                sleepBtn.innerText = "Exit Sleep Mode";
-                sleepBtn.style.backgroundColor = "#334155";
+                sleepBtn.innerText = "☀️ Exit Sleep Mode";
             } else {
                 body.classList.remove('sleep-mode');
-                sleepBtn.innerText = "Enable Sleep Mode";
-                sleepBtn.style.backgroundColor = "#64748b";
+                sleepBtn.innerText = "🌙 Enable Sleep Mode";
             }
         }
     </script>
