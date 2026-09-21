@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SleepEarn - Distributed Computing Network</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --success-color: #22c55e;
+            --danger-color: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 420px;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            box-sizing: border-box;
+            margin: 20px;
+        }
+
+        h1 {
+            color: var(--accent-color);
+            margin-bottom: 5px;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .status-box {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .status-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .label {
+            color: var(--text-muted);
+        }
+
+        .value {
+            font-weight: bold;
+        }
+
+        #nodeStatus {
+            color: var(--success-color);
+        }
+
+        #points {
+            color: #facc15;
+        }
+
+        .btn {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>SleepEarn</h1>
+        <div class="subtitle">Distributed Node Dashboard</div>
+        
+        <div class="status-box">
+            <div class="status-row">
+                <span class="label">Node Status:</span>
+                <span class="value" id="nodeStatus">Running</span>
+            </div>
+            <div class="status-row">
+                <span class="label">Active Time:</span>
+                <span class="value" id="timer">0s</span>
+            </div>
+            <div class="status-row">
+                <span class="label">Earned Points:</span>
+                <span class="value" id="points">0</span>
+            </div>
+        </div>
+
+        <button class="btn" id="actionBtn" onclick="toggleNode()">Stop Node</button>
+        
+        <div class="footer">
+            Powered by GitHub Pages & Render Cloud
+        </div>
+    </div>
+
+    <script>
+        // لوکل اسٹوریج سے پرانے پوائنٹس لوڈ کرنا تاکہ ریفریش کرنے پر ڈیٹا ضائع نہ ہو
+        let seconds = parseInt(localStorage.getItem('se_seconds')) || 0;
+        let points = parseInt(localStorage.getItem('se_points')) || 0;
+        let isRunning = true;
+
+        // سکرین پر ویلیوز اپ ڈیٹ کرنا
+        document.getElementById('timer').innerText = seconds + 's';
+        document.getElementById('points').innerText = points;
+
+        // ہر ایک سیکنڈ بعد ٹائمر اور پوائنٹس بڑھانا
+        setInterval(() => {
+            if (isRunning) {
+                seconds++;
+                document.getElementById('timer').innerText = seconds + 's';
+                
+                // ہر 5 سیکنڈ پر 1 پوائنٹ ملے گا
+                if (seconds % 5 === 0) {
+                    points += 1;
+                    document.getElementById('points').innerText = points;
+                }
+
+                // براؤزر میں ڈیٹا سیو رکھنا
+                localStorage.setItem('se_seconds', seconds);
+                localStorage.setItem('se_points', points);
+            }
+        }, 1000);
+
+        // نوڈ کو شروع یا بند کرنے کا بٹن
+        function toggleNode() {
+            isRunning = !isRunning;
+            let btn = document.getElementById('actionBtn');
+            let status = document.getElementById('nodeStatus');
+
+            if (isRunning) {
+                btn.innerText = "Stop Node";
+                btn.style.backgroundColor = "var(--success-color)";
+                status.innerText = "Running";
+                status.style.color = "var(--success-color)";
+            } else {
+                btn.innerText = "Start Node";
+                btn.style.backgroundColor = "var(--danger-color)";
+                status.innerText = "Paused";
+                status.style.color = "var(--danger-color)";
+            }
+        }
+    </script>
+</body>
+</html>
