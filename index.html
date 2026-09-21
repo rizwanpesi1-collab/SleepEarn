@@ -26,6 +26,28 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            transition: background 0.3s;
+        }
+
+        /* سلیپ موڈ کے لیے بلیک سکرین سائیڈ */
+        body.sleep-mode {
+            background-color: #000000;
+            color: #333333;
+        }
+
+        body.sleep-mode .container {
+            background: #050505;
+            border-color: #111;
+            box-shadow: none;
+        }
+
+        body.sleep-mode .status-box {
+            background: #000;
+            border-color: #111;
+        }
+
+        body.sleep-mode h1, body.sleep-mode .value, body.sleep-mode .label {
+            color: #222 !important;
         }
 
         .container {
@@ -39,6 +61,7 @@
             text-align: center;
             box-sizing: border-box;
             margin: 20px;
+            transition: all 0.3s;
         }
 
         h1 {
@@ -81,7 +104,7 @@
         }
 
         #nodeStatus {
-            color: var(--success-color);
+            color: var(--danger-color);
         }
 
         #points {
@@ -98,7 +121,12 @@
             cursor: pointer;
             font-weight: bold;
             width: 100%;
+            margin-bottom: 10px;
             transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-sleep {
+            background-color: #64748b;
         }
 
         .btn:active {
@@ -106,7 +134,7 @@
         }
 
         .footer {
-            margin-top: 20px;
+            margin-top: 15px;
             font-size: 12px;
             color: var(--text-muted);
         }
@@ -114,14 +142,18 @@
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" id="mainContainer">
         <h1>SleepEarn</h1>
         <div class="subtitle">Distributed Node Dashboard</div>
         
         <div class="status-box">
             <div class="status-row">
+                <span class="label">Charger Status:</span>
+                <span class="value" id="chargerStatus">Checking...</span>
+            </div>
+            <div class="status-row">
                 <span class="label">Node Status:</span>
-                <span class="value" id="nodeStatus">Running</span>
+                <span class="value" id="nodeStatus">Waiting for Charger</span>
             </div>
             <div class="status-row">
                 <span class="label">Active Time:</span>
@@ -133,26 +165,59 @@
             </div>
         </div>
 
-        <button class="btn" id="actionBtn" onclick="toggleNode()">Stop Node</button>
+        <button class="btn btn-sleep" id="sleepBtn" onclick="toggleSleepMode()">Enable Sleep Mode</button>
         
         <div class="footer">
-            Powered by GitHub Pages & Render Cloud
+            Connect charger to start earning points automatically.
         </div>
     </div>
 
     <script>
-        // لوکل اسٹوریج سے پرانے پوائنٹس لوڈ کرنا تاکہ ریفریش کرنے پر ڈیٹا ضائع نہ ہو
         let seconds = parseInt(localStorage.getItem('se_seconds')) || 0;
         let points = parseInt(localStorage.getItem('se_points')) || 0;
-        let isRunning = true;
+        let isCharging = false;
+        let isSleepMode = false;
 
-        // سکرین پر ویلیوز اپ ڈیٹ کرنا
         document.getElementById('timer').innerText = seconds + 's';
         document.getElementById('points').innerText = points;
 
-        // ہر ایک سیکنڈ بعد ٹائمر اور پوائنٹس بڑھانا
+        // براؤزر کی بیٹری اور چارجنگ چیک کرنے کا فنکشن
+        if ('getBattery' in navigator) {
+            navigator.getBattery().then(function(battery) {
+                updateBatteryState(battery);
+                battery.addEventListener('chargingchange', function() {
+                    updateBatteryState(battery);
+                });
+            });
+        } else {
+            // اگر براؤزر بیٹری API سپورٹ نہ کرے تو ڈائرैक्ट چارجنگ مان لیں یا ٹیسٹ کے لیے آن رکھیں
+            isCharging = true;
+            document.getElementById('chargerStatus').innerText = "Connected (Simulated)";
+            document.getElementById('nodeStatus').innerText = "Running";
+            document.getElementById('nodeStatus').style.color = "var(--success-color)";
+        }
+
+        function updateBatteryState(battery) {
+            isCharging = battery.charging;
+            let chargerStatusEl = document.getElementById('chargerStatus');
+            let nodeStatusEl = document.getElementById('nodeStatus');
+
+            if (isCharging) {
+                chargerStatusEl.innerText = "Plugged In (" + Math.round(battery.level * 100) + "%)";
+                chargerStatusEl.style.color = "var(--success-color)";
+                nodeStatusEl.innerText = "Running";
+                nodeStatusEl.style.color = "var(--success-color)";
+            } else {
+                chargerStatusEl.innerText = "Unplugged";
+                chargerStatusEl.style.color = "var(--danger-color)";
+                nodeStatusEl.innerText = "Paused (Plug in charger)";
+                nodeStatusEl.style.color = "var(--danger-color)";
+            }
+        }
+
+        // ہر ایک سیکنڈ کا لوپ - صرف اس وقت چلے گا جب چارجنگ ہو رہی ہو
         setInterval(() => {
-            if (isRunning) {
+            if (isCharging) {
                 seconds++;
                 document.getElementById('timer').innerText = seconds + 's';
                 
@@ -162,28 +227,25 @@
                     document.getElementById('points').innerText = points;
                 }
 
-                // براؤزر میں ڈیٹا سیو رکھنا
                 localStorage.setItem('se_seconds', seconds);
                 localStorage.setItem('se_points', points);
             }
         }, 1000);
 
-        // نوڈ کو شروع یا بند کرنے کا بٹن
-        function toggleNode() {
-            isRunning = !isRunning;
-            let btn = document.getElementById('actionBtn');
-            let status = document.getElementById('nodeStatus');
+        // سلیپ موڈ آن/آف کرنے کا فنکشن
+        function toggleSleepMode() {
+            isSleepMode = !isSleepMode;
+            let body = document.body;
+            let sleepBtn = document.getElementById('sleepBtn');
 
-            if (isRunning) {
-                btn.innerText = "Stop Node";
-                btn.style.backgroundColor = "var(--success-color)";
-                status.innerText = "Running";
-                status.style.color = "var(--success-color)";
+            if (isSleepMode) {
+                body.classList.add('sleep-mode');
+                sleepBtn.innerText = "Exit Sleep Mode";
+                sleepBtn.style.backgroundColor = "#334155";
             } else {
-                btn.innerText = "Start Node";
-                btn.style.backgroundColor = "var(--danger-color)";
-                status.innerText = "Paused";
-                status.style.color = "var(--danger-color)";
+                body.classList.remove('sleep-mode');
+                sleepBtn.innerText = "Enable Sleep Mode";
+                sleepBtn.style.backgroundColor = "#64748b";
             }
         }
     </script>
