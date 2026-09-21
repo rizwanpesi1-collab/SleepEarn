@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html lang="ur" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SleepEarn - Smart Node Network</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>SleepEarn - Professional Node Network</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #090d16 0%, #1a1c29 100%);
-            --card-bg: rgba(30, 41, 59, 0.7);
+            --bg-deep: #070913;
+            --card-bg: rgba(20, 27, 45, 0.85);
             --border-glow: rgba(56, 189, 248, 0.2);
-            --accent: #38bdf8;
+            --accent-blue: #38bdf8;
+            --accent-purple: #818cf8;
             --success: #10b981;
             --danger: #f43f5e;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
+            --warning: #fbbf24;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
         * {
@@ -25,300 +27,516 @@
         }
 
         body {
-            background: var(--bg-gradient);
-            color: var(--text-primary);
+            background: radial-gradient(circle at top, #111827 0%, var(--bg-deep) 100%);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            transition: background 0.4s ease;
+            padding: 15px;
+            transition: background 0.4s;
         }
 
-        /* Sleep Mode Theme (Pure Black for OLED) */
-        body.sleep-mode {
+        /* نائٹ / سلیپ موڈ (جب فعال ہو) */
+        body.night-mode-active {
             background: #000000 !important;
-            color: #222;
         }
-
-        body.sleep-mode .app-card {
+        body.night-mode-active .phone-frame {
             background: #050505;
-            border: 1px solid #111;
+            border-color: #111;
             box-shadow: none;
         }
-
-        body.sleep-mode .stat-box {
-            background: #0a0a0a;
-            border-color: #151515;
+        body.night-mode-active .brand-title,
+        body.night-mode-active .stat-val {
+            color: #333 !important;
         }
 
-        body.sleep-mode h1, 
-        body.sleep-mode .stat-value, 
-        body.sleep-mode .brand {
-            color: #222 !important;
-        }
-
-        .app-card {
+        .phone-frame {
             background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-glow);
             width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            text-align: center;
-            transition: all 0.4s ease;
-        }
-
-        .header {
-            margin-bottom: 25px;
-        }
-
-        .brand {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-
-        .tagline {
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        /* Stats Grid */
-        .stats-container {
+            max-width: 410px;
+            height: 750px;
+            border-radius: 36px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 25px;
+            justify-content: space-between;
+            overflow: hidden;
+            position: relative;
         }
 
-        .stat-box {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 14px 18px;
-            border-radius: 14px;
+        /* ٹاپ ہیڈر */
+        .app-header {
+            padding: 25px 20px 10px 20px;
+            text-align: center;
+        }
+
+        .brand-title {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.8px;
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* سکرین کا مین ایریا */
+        .screen-content {
+            flex: 1;
+            padding: 10px 20px;
+            overflow-y: auto;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .section.active {
+            display: flex;
+            flex-direction: column;
             align-items: center;
         }
 
-        .stat-label {
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 500;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .stat-value {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-primary);
+        /* گول اسمارٹ مائننگ بٹن */
+        .mining-container {
+            position: relative;
+            margin: 15px 0;
         }
 
-        .status-dot {
-            height: 8px;
-            width: 8px;
-            background-color: var(--danger);
+        .circular-btn {
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            display: inline-block;
-            margin-right: 6px;
-            box-shadow: 0 0 8px var(--danger);
-            transition: 0.3s;
-        }
-
-        .status-dot.active {
-            background-color: var(--success);
-            box-shadow: 0 0 10px var(--success);
-        }
-
-        .points-highlight {
-            color: #fbbf24 !important;
-            font-size: 18px !important;
-        }
-
-        /* Action Buttons */
-        .btn-group {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 3px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
-            gap: 10px;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 600;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            outline: none;
         }
 
-        .btn-sleep {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-primary);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .circular-btn.active-node {
+            background: linear-gradient(145deg, #059669, #047857);
+            border-color: #34d399;
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.4);
         }
 
-        .btn-sleep:hover {
-            background: rgba(255, 255, 255, 0.12);
+        .circular-btn.disabled-node {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: rgba(244, 63, 94, 0.3);
         }
 
-        .btn-test {
-            background: transparent;
-            color: var(--text-secondary);
-            font-size: 12px;
-            padding: 6px;
-            margin-top: 5px;
-            text-decoration: underline;
+        .btn-icon {
+            font-size: 30px;
+            margin-bottom: 5px;
         }
 
-        .footer-note {
-            margin-top: 20px;
+        .btn-text {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+        }
+
+        /* اسٹیٹس کارڈز */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 12px 14px;
+            border-radius: 14px;
+            text-align: left;
+        }
+
+        .stat-title {
             font-size: 11px;
-            color: var(--text-secondary);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .stat-val {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-top: 4px;
+        }
+
+        .highlight-gold {
+            color: var(--warning) !important;
+        }
+
+        .status-indicator {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(244, 63, 94, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(244, 63, 94, 0.2);
+            text-align: center;
+        }
+
+        .status-indicator.ready {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        /* ودڈرا فارم کے اجزاء */
+        .input-group {
+            width: 100%;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .input-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .text-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .action-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 13px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+            margin-top: 5px;
+        }
+
+        /* نیچے والے 4 آپشنز کا نیویگیشن بار */
+        .bottom-nav {
+            background: rgba(11, 15, 25, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            height: 70px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        .nav-item {
+            background: transparent;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            flex: 1;
+            transition: 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: var(--accent-blue);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
-    <div class="app-card" id="appCard">
-        <div class="header">
-            <div class="brand">SleepEarn</div>
-            <div class="tagline">Distributed Passive Cloud Node</div>
+    <div class="phone-frame">
+        <!-- ٹاپ ہیڈر -->
+        <div class="app-header">
+            <div class="brand-title">SleepEarn</div>
+            <div class="brand-subtitle">Cloud Distributed Node</div>
         </div>
 
-        <div class="stats-container">
-            <div class="stat-box">
-                <span class="stat-label">Charger Status</span>
-                <span class="stat-value" id="chargerStatus">Detecting...</span>
-            </div>
+        <!-- مین سکرین (جہاں چاروں حصے الگ الگ کھلیں گے) -->
+        <div class="screen-content">
             
-            <div class="stat-box">
-                <span class="stat-label">Node State</span>
-                <span class="stat-value">
-                    <span class="status-dot" id="statusDot"></span>
-                    <span id="nodeStateText">Waiting...</span>
-                </span>
+            <!-- 1. ہوم سیکشن -->
+            <div class="section active" id="sec-home">
+                <div class="status-indicator" id="conditionStatus">⏳ Checking Charger & Night State...</div>
+
+                <div class="mining-container">
+                    <button class="circular-btn disabled-node" id="powerBtn" onclick="toggleMining()" disabled>
+                        <span class="btn-icon" id="btnIcon">🔒</span>
+                        <span class="btn-text" id="btnText">LOCKED</span>
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-title">Active Uptime</div>
+                        <div class="stat-val" id="timer">0s</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Total Points</div>
+                        <div class="stat-val highlight-gold" id="points">0</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="stat-box">
-                <span class="stat-label">Active Uptime</span>
-                <span class="stat-value" id="timer">0s</span>
+            <!-- 2. پوائنٹس / مائننگ میٹرکس سیکشن -->
+            <div class="section" id="sec-points">
+                <h2 style="font-size: 18px; margin-bottom: 12px; color: var(--accent-blue);">Mining Metrics</h2>
+                <div class="stats-grid" style="grid-template-columns: 1fr;">
+                    <div class="stat-card">
+                        <div class="stat-title">Reward Rate</div>
+                        <div class="stat-val" style="font-size: 14px;">1 Point per 5 Seconds</div>
+                    </div>
+                    <div class="stat-card" style="margin-top: 8px;">
+                        <div class="stat-title">Network Status</div>
+                        <div class="stat-val" style="font-size: 14px; color: var(--success);">Render Cloud Connected</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="stat-box">
-                <span class="stat-label">Total Points</span>
-                <span class="stat-value points-highlight" id="points">0</span>
+            <!-- 3. ودڈرا سیکشن -->
+            <div class="section" id="sec-withdraw">
+                <h2 style="font-size: 18px; margin-bottom: 12px; color: var(--warning);">Withdraw Points</h2>
+                <div class="input-group">
+                    <label class="input-label">Payment Method</label>
+                    <select class="text-input" id="payMethod">
+                        <option value="jazzcash">JazzCash / EasyPaisa</option>
+                        <option value="crypto">USDT Wallet</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Account / Wallet Number</label>
+                    <input type="text" class="text-input" id="accountNo" placeholder="Enter number">
+                </div>
+                <button class="action-btn" onclick="requestWithdrawal()">Submit Request</button>
             </div>
+
+            <!-- 4. پروفائل سیکشن -->
+            <div class="section" id="sec-profile">
+                <h2 style="font-size: 18px; margin-bottom: 12px; color: var(--accent-purple);">Node Profile</h2>
+                <div class="stat-card" style="width: 100%; margin-bottom: 8px;">
+                    <div class="stat-title">Node Identifier</div>
+                    <div class="stat-val" style="font-size: 13px;">SE-NODE-PRO-998</div>
+                </div>
+                <div class="stat-card" style="width: 100%;">
+                    <div class="stat-title">Security Mode</div>
+                    <div class="stat-val" style="font-size: 13px; color: var(--success);">Charging & Night Guard Active</div>
+                </div>
+            </div>
+
         </div>
 
-        <div class="btn-group">
-            <button class="btn btn-sleep" id="sleepBtn" onclick="toggleSleepMode()">🌙 Enable Sleep Mode</button>
-            <button class="btn btn-test" onclick="toggleSimulation()">⚡ Test/Simulate Charger</button>
-        </div>
-
-        <div class="footer-note">
-            Connect charger to automatically mine & sync points 24/7.
-        </div>
+        <!-- نیچے والے 4 آپشنز کا نیویگیشن بار -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="switchTab('home', this)">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('points', this)">
+                <span class="nav-icon">⚡</span>
+                <span class="nav-label">Points</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('withdraw', this)">
+                <span class="nav-icon">💳</span>
+                <span class="nav-label">Withdraw</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('profile', this)">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </button>
+        </nav>
     </div>
 
     <script>
         let seconds = parseInt(localStorage.getItem('se_seconds')) || 0;
         let points = parseInt(localStorage.getItem('se_points')) || 0;
+        let isMining = false;
         let isCharging = false;
-        let isSleepMode = false;
-        let isSimulated = false;
+        let chargeStartTime = null;
 
-        // UI Initialization
         document.getElementById('timer').innerText = seconds + 's';
         document.getElementById('points').innerText = points;
 
-        // Battery API Integration
+        // ٹیب سوئچ کرنے کا فنکشن
+        function switchTab(tabName, btnElement) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+
+            document.getElementById('sec-' + tabName).classList.add('active');
+            btnElement.classList.add('active');
+        }
+
+        // بیٹری اور نائٹ موڈ چیک کرنے کا لاجک
         if ('getBattery' in navigator) {
             navigator.getBattery().then(function(battery) {
-                if (!isSimulated) updateBatteryUI(battery.charging, battery.level);
+                evaluateSystem(battery);
                 battery.addEventListener('chargingchange', function() {
-                    if (!isSimulated) updateBatteryUI(battery.charging, battery.level);
+                    evaluateSystem(battery);
                 });
             });
         } else {
-            // Fallback simulation mode if battery API is restricted
-            setChargingState(true, "Simulated (Connected)");
+            // اگر بیٹری API نہ ہو تو ٹیسٹ کے لیے آن مان لیں
+            setUnlockedState(true, "Simulated Connected");
         }
 
-        function updateBatteryUI(charging, level) {
-            let percent = Math.round(level * 100);
-            if (charging) {
-                setChargingState(true, `Plugged In (${percent}%)`);
+        function evaluateSystem(battery) {
+            let currentHour = new Date().getHours();
+            let isNightTime = (currentHour >= 20 || currentHour < 6); // رات 8 سے صبح 6
+
+            if (battery.charging) {
+                if (!chargeStartTime) chargeStartTime = Date.now();
+                setUnlockedState(true, isNightTime ? "Night & Charging Active" : "Charger Plugged In");
+                
+                // اگر 10 منٹ سے زیادہ چارجنگ پر ہو تو خودکار نائٹ موڈ
+                if (Date.now() - chargeStartTime >= 10 * 60 * 1000) {
+                    document.body.classList.add('night-mode-active');
+                }
             } else {
-                setChargingState(false, "Unplugged");
+                chargeStartTime = null;
+                setUnlockedState(false, "Plug in charger to unlock");
+                document.body.classList.remove('night-mode-active');
+                if (isMining) stopMining();
             }
         }
 
-        function setChargingState(charging, text) {
-            isCharging = charging;
-            document.getElementById('chargerStatus').innerText = text;
-            
-            let dot = document.getElementById('statusDot');
-            let stateText = document.getElementById('nodeStateText');
+        function setUnlockedState(unlocked, text) {
+            isCharging = unlocked;
+            let statusEl = document.getElementById('conditionStatus');
+            let powerBtn = document.getElementById('powerBtn');
+            let btnIcon = document.getElementById('btnIcon');
+            let btnText = document.getElementById('btnText');
 
-            if (charging) {
-                dot.classList.add('active');
-                stateText.innerText = "Running";
+            if (unlocked) {
+                statusEl.innerText = "✅ Ready: " + text;
+                statusEl.className = "status-indicator ready";
+                powerBtn.disabled = false;
+                powerBtn.classList.remove('disabled-node');
+                if (!isMining) {
+                    btnIcon.innerText = "🔋";
+                    btnText.innerText = "START NODE";
+                }
             } else {
-                dot.classList.remove('active');
-                stateText.innerText = "Paused (Plug in charger)";
+                statusEl.innerText = "❌ " + text;
+                statusEl.className = "status-indicator";
+                powerBtn.disabled = true;
+                powerBtn.classList.add('disabled-node');
+                btnIcon.innerText = "🔒";
+                btnText.innerText = "LOCKED";
             }
         }
 
-        // Manual Simulation Toggle for Testing
-        function toggleSimulation() {
-            isSimulated = true;
-            isCharging = !isCharging;
-            if (isCharging) {
-                setChargingState(true, "Manual Test (Active)");
+        function toggleMining() {
+            if (!isCharging) return;
+            isMining = !isMining;
+            let powerBtn = document.getElementById('powerBtn');
+            let btnIcon = document.getElementById('btnIcon');
+            let btnText = document.getElementById('btnText');
+
+            if (isMining) {
+                powerBtn.classList.add('active-node');
+                btnIcon.innerText = "⚡";
+                btnText.innerText = "MINING...";
             } else {
-                setChargingState(false, "Manual Test (Paused)");
+                stopMining();
             }
         }
 
-        // Core Earning Engine (Runs every 1 second)
+        function stopMining() {
+            isMining = false;
+            let powerBtn = document.getElementById('powerBtn');
+            let btnIcon = document.getElementById('btnIcon');
+            let btnText = document.getElementById('btnText');
+
+            powerBtn.classList.remove('active-node');
+            btnIcon.innerText = "🔋";
+            btnText.innerText = "START NODE";
+        }
+
+        // سیکنڈز اور پوائنٹس کاؤنٹر
         setInterval(() => {
-            if (isCharging) {
+            if (isMining && isCharging) {
                 seconds++;
                 document.getElementById('timer').innerText = seconds + 's';
                 
-                // Earn 1 point every 5 seconds of active charging
                 if (seconds % 5 === 0) {
                     points += 1;
                     document.getElementById('points').innerText = points;
                 }
 
-                // Save to LocalStorage
                 localStorage.setItem('se_seconds', seconds);
                 localStorage.setItem('se_points', points);
             }
         }, 1000);
 
-        // Sleep Mode (OLED Black Screen)
-        function toggleSleepMode() {
-            isSleepMode = !isSleepMode;
-            let body = document.body;
-            let sleepBtn = document.getElementById('sleepBtn');
-
-            if (isSleepMode) {
-                body.classList.add('sleep-mode');
-                sleepBtn.innerText = "☀️ Exit Sleep Mode";
-            } else {
-                body.classList.remove('sleep-mode');
-                sleepBtn.innerText = "🌙 Enable Sleep Mode";
+        // ودڈرا کی ریکوئست
+        function requestWithdrawal() {
+            let acc = document.getElementById('accountNo').value;
+            if (!acc) {
+                alert("براہ کرم اپنا اکاؤنٹ یا والٹ نمبر درج کریں!");
+                return;
             }
+            if (points < 50) {
+                alert("کم از کم 50 پوائنٹس درکار ہیں! آپ کے پاس " + points + " پوائنٹس ہیں۔");
+                return;
+            }
+
+            alert("ودڈرا ریکوئست جمع ہو گئی ہے! آپ کے " + points + " پوائنٹس پروسیس کیے جا رہے ہیں۔");
+            points = 0;
+            document.getElementById('points').innerText = points;
+            localStorage.setItem('se_points', points);
+            document.getElementById('accountNo').value = "";
         }
     </script>
 </body>
