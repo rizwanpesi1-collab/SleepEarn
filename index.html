@@ -1,304 +1,419 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SleepEarn - Professional Node Network</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-deep: #070913;
-            --card-bg: rgba(20, 27, 45, 0.85);
-            --border-glow: rgba(56, 189, 248, 0.2);
-            --accent-blue: #38bdf8;
-            --accent-purple: #818cf8;
-            --success: #10b981;
-            --danger: #f43f5e;
-            --warning: #fbbf24;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>🧩 1000 مشکل اردو پہیلیاں - فل اسکرین موبائل اسوڈیو</title>
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:"Noto Nastaliq Urdu","Noto Sans Arabic",Arial,sans-serif;
+    background:linear-gradient(135deg,#030712,#0f172a,#020617);
+    color:#fff;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+header{
+    background:linear-gradient(135deg,#7c3aed,#2563eb);
+    padding:12px 16px;
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+    box-shadow:0 4px 20px #0008;
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+.container{
+    width:min(500px, 100%);
+    margin:auto;
+    padding:10px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+/* Full 9:16 Mobile Screen Card Style */
+.card{
+    background:#0b132bcc;
+    backdrop-filter:blur(10px);
+    border:1px solid #ffffff18;
+    border-radius:24px;
+    padding:18px;
+    box-shadow:0 15px 40px #000a;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    min-height:78vh;
+}
+.controls{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr 1fr;
+    gap:6px;
+    margin-bottom:12px;
+}
+button{
+    border:0;
+    border-radius:12px;
+    padding:10px 8px;
+    font-weight:bold;
+    color:#fff;
+    cursor:pointer;
+    font-size:13px;
+    transition:.2s;
+}
+button:active{transform:scale(.95)}
+.short{background:#0891b2}
+.long{background:#7c3aed}
+.voice{background:#16a34a}
+.voice.off{background:#64748b}
+.autoplay-btn{background:#eab308; color:#000}
+.autoplay-btn.off{background:#64748b; color:#fff}
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+    margin-bottom:12px;
+}
+.stat{
+    background:#070d18;
+    border-radius:12px;
+    padding:8px;
+    text-align:center;
+    color:#a5b4fc;
+    font-size:12px;
+}
+.stat b{
+    display:block;
+    color:#fff;
+    font-size:15px;
+    margin-top:2px;
+}
+.question-area{
+    text-align:center;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+.badge{
+    display:inline-block;
+    background:#7c3aed;
+    border-radius:30px;
+    padding:5px 14px;
+    font-size:13px;
+    margin-bottom:10px;
+}
+.question{
+    font-size:22px;
+    line-height:1.9;
+    padding:14px;
+    background:#070d18;
+    border-radius:16px;
+    border:1px solid #ffffff10;
+    margin-bottom:12px;
+}
+.timer-box{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:12px;
+}
+.timer{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:radial-gradient(circle,#172554,#0f172a);
+    border:5px solid #2563eb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+}
+.timer b{
+    font-size:26px;
+    line-height:1;
+}
+.timer small{
+    font-size:10px;
+    color:#94a3b8;
+}
+.progress{
+    width:100%;
+    height:7px;
+    background:#020617;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:12px;
+}
+.progress-bar{
+    width:100%;
+    height:100%;
+    background:linear-gradient(90deg,#22c55e,#eab308,#ef4444);
+    transition:width 1s linear;
+}
+.answer{
+    display:none;
+    background:linear-gradient(135deg,#064e3b,#065f46);
+    border:1px solid #34d39955;
+    border-radius:16px;
+    padding:14px;
+    margin-bottom:12px;
+}
+.answer.show{display:block}
+.answer h2{
+    margin:0 0 5px;
+    color:#86efac;
+    font-size:16px;
+}
+.answer-text{
+    font-size:22px;
+    font-weight:bold;
+}
+.answer-image{
+    width:min(220px,70%);
+    height:150px;
+    object-fit:contain;
+    display:block;
+    margin:8px auto 0;
+    border-radius:12px;
+    background:#fff;
+}
+.nav{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr 1fr;
+    gap:6px;
+}
+.prev{background:#475569}
+.next{background:#2563eb}
+.random{background:#9333ea}
+.reset{background:#ea580c}
 
-        body {
-            background: radial-gradient(circle at top, #111827 0%, var(--bg-deep) 100%);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-        }
-
-        body.night-mode-active { background: #000000 !important; }
-        body.night-mode-active .phone-frame { background: #050505; border-color: #111; box-shadow: none; }
-        body.night-mode-active .brand-title, body.night-mode-active .stat-val { color: #333 !important; }
-
-        .phone-frame {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glow);
-            width: 100%;
-            max-width: 410px;
-            height: 750px;
-            border-radius: 36px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .app-header { padding: 25px 20px 10px 20px; text-align: center; }
-        .brand-title {
-            font-size: 28px; font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .brand-subtitle { font-size: 11px; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 1.5px; }
-
-        .screen-content { flex: 1; padding: 10px 20px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .section { display: none; width: 100%; }
-        .section.active { display: flex; flex-direction: column; align-items: center; }
-
-        .mining-container { position: relative; margin: 15px 0; }
-        .circular-btn {
-            width: 150px; height: 150px; border-radius: 50%;
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            border: 3px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.3s ease; outline: none;
-        }
-        .circular-btn.active-node { background: linear-gradient(145deg, #059669, #047857); border-color: #34d399; box-shadow: 0 0 35px rgba(16, 185, 129, 0.4); }
-        .circular-btn.disabled-node { opacity: 0.5; cursor: not-allowed; border-color: rgba(244, 63, 94, 0.3); }
-
-        .btn-icon { font-size: 30px; margin-bottom: 5px; }
-        .btn-text { font-size: 13px; font-weight: 700; color: var(--text-main); }
-
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 10px; }
-        .stat-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.04); padding: 12px 14px; border-radius: 14px; text-align: left; }
-        .stat-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-        .stat-val { font-size: 17px; font-weight: 700; color: var(--text-main); margin-top: 4px; }
-        .highlight-gold { color: var(--warning) !important; }
-
-        .status-indicator {
-            font-size: 12px; font-weight: 600; margin-bottom: 10px; padding: 6px 14px;
-            border-radius: 20px; background: rgba(244, 63, 94, 0.1); color: var(--danger);
-            border: 1px solid rgba(244, 63, 94, 0.2); text-align: center; width: 100%;
-        }
-        .status-indicator.ready { background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: rgba(16, 185, 129, 0.2); }
-
-        .input-group { width: 100%; margin-bottom: 12px; text-align: left; }
-        .input-label { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; display: block; }
-        .text-input { width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); padding: 12px 16px; border-radius: 12px; color: white; font-size: 14px; outline: none; }
-        .action-btn { width: 100%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: white; border: none; padding: 13px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 5px; }
-
-        .bottom-nav { background: rgba(11, 15, 25, 0.95); border-top: 1px solid rgba(255, 255, 255, 0.05); height: 70px; display: flex; justify-content: space-around; align-items: center; padding: 0 5px; }
-        .nav-item { background: transparent; border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; flex: 1; }
-        .nav-item.active { color: var(--accent-blue); }
-        .nav-icon { font-size: 20px; margin-bottom: 2px; }
-        .nav-label { font-size: 11px; font-weight: 600; }
-    </style>
+.counter{
+    text-align:center;
+    margin-top:10px;
+    color:#94a3b8;
+    font-size:12px;
+}
+</style>
 </head>
 <body>
 
-    <div class="phone-frame">
-        <div class="app-header">
-            <div class="brand-title">SleepEarn</div>
-            <div class="brand-subtitle">Cloud Distributed Node</div>
+<header>
+🧩 1000 مشکل اردو پہیلیاں (فل اسکرین موڈ)
+</header>
+
+<div class="container">
+    <div class="card">
+        <!-- Modes & Controls -->
+        <div class="controls">
+            <button class="short" onclick="setShort()">📱 Short</button>
+            <button class="long" onclick="setLong()">🖥️ Long</button>
+            <button class="voice" id="voiceBtn" onclick="toggleVoice()">🔊 آواز ON</button>
+            <button class="autoplay-btn" id="autoPlayBtn" onclick="toggleAutoPlay()">▶ آٹو پلے ON</button>
         </div>
 
-        <div class="screen-content">
-            <!-- Home -->
-            <div class="section active" id="sec-home">
-                <div class="status-indicator" id="conditionStatus">⏳ Checking System...</div>
-                <div class="mining-container">
-                    <button class="circular-btn disabled-node" id="powerBtn" onclick="toggleMining()" disabled>
-                        <span class="btn-icon" id="btnIcon">🔒</span>
-                        <span class="btn-text" id="btnText">LOCKED</span>
-                    </button>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-title">Active Uptime</div>
-                        <div class="stat-val" id="timer">0s</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-title">Total Points</div>
-                        <div class="stat-val highlight-gold" id="points">0</div>
-                    </div>
-                </div>
+        <div class="stats">
+            <div class="stat">پہیلی نمبر<b id="number">1 / 1000</b></div>
+            <div class="stat">حل شدہ<b id="score">0</b></div>
+            <div class="stat">وقت<b id="smallTimer">10</b></div>
+        </div>
+
+        <div class="question-area">
+            <div class="badge">🧠 مشکل پہیلی</div>
+            <div class="question" id="question">پہیلی لوڈ ہو رہی ہے...</div>
+            
+            <div class="progress">
+                <div class="progress-bar" id="progress"></div>
             </div>
 
-            <!-- Points -->
-            <div class="section" id="sec-points">
-                <h2 style="font-size: 18px; margin-bottom: 12px; color: var(--accent-blue);">Mining Metrics</h2>
-                <div class="stats-grid" style="grid-template-columns: 1fr;">
-                    <div class="stat-card">
-                        <div class="stat-title">Reward Rate</div>
-                        <div class="stat-val" style="font-size: 14px;">1 Point per 5 Seconds</div>
-                    </div>
-                    <div class="stat-card" style="margin-top: 8px;">
-                        <div class="stat-title">Server Sync Status</div>
-                        <div class="stat-val" id="syncStatusText" style="font-size: 14px; color: var(--success);">Connected</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Withdraw -->
-            <div class="section" id="sec-withdraw">
-                <h2 style="font-size: 18px; margin-bottom: 12px; color: var(--warning);">Withdraw Points</h2>
-                <div class="input-group">
-                    <label class="input-label">Payment Method</label>
-                    <select class="text-input" id="payMethod">
-                        <option value="jazzcash">JazzCash / EasyPaisa</option>
-                        <option value="crypto">USDT Wallet</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Account / Wallet Number</label>
-                    <input type="text" class="text-input" id="accountNo" placeholder="Enter number">
-                </div>
-                <button class="action-btn" onclick="requestWithdrawal()">Submit Request</button>
-            </div>
-
-            <!-- Profile -->
-            <div class="section" id="sec-profile">
-                <h2 style="font-size: 18px; margin-bottom: 12px; color: var(--accent-purple);">Node Profile</h2>
-                <div class="stat-card" style="width: 100%; margin-bottom: 8px;">
-                    <div class="stat-title">Assigned Node ID</div>
-                    <div class="stat-val" id="nodeIdDisplay" style="font-size: 13px;">-</div>
-                </div>
-                <div class="stat-card" style="width: 100%;">
-                    <div class="stat-title">Target Device Status</div>
-                    <div class="stat-val" style="font-size: 13px; color: var(--success);">Multi-Device Ready</div>
-                </div>
+            <div class="answer" id="answerBox">
+                <h2>✅ درست جواب</h2>
+                <div class="answer-text" id="answer"></div>
+                <img id="answerImage" class="answer-image" alt="جواب کی تصویر">
             </div>
         </div>
 
-        <nav class="bottom-nav">
-            <button class="nav-item active" onclick="switchTab('home', this)"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
-            <button class="nav-item" onclick="switchTab('points', this)"><span class="nav-icon">⚡</span><span class="nav-label">Points</span></button>
-            <button class="nav-item" onclick="switchTab('withdraw', this)"><span class="nav-icon">💳</span><span class="nav-label">Withdraw</span></button>
-            <button class="nav-item" onclick="switchTab('profile', this)"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></button>
-        </nav>
+        <div class="nav">
+            <button class="prev" onclick="prevPuzzle()">⬅️ پچھلی</button>
+            <button class="next" onclick="nextPuzzle()">اگلی ➡️</button>
+            <button class="random" onclick="randomPuzzle()">🎲 برعکس</button>
+            <button class="reset" onclick="resetGame()">🔄 دوبارہ</button>
+        </div>
+
+        <div class="counter">کل 1000 مشکل پہیلیاں (مکمل ہونے پر خود بخود دوبارہ شروع ہوں گی)</div>
     </div>
+</div>
 
-    <script>
-        // ہر فون کے لیے منفرد نوڈ آئی ڈی بنانا تاکہ 5 فون الگ الگ پہچانے جائیں
-        let nodeId = localStorage.getItem('se_node_id');
-        if (!nodeId) {
-            nodeId = 'NODE-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-            localStorage.setItem('se_node_id', nodeId);
-        }
-        document.getElementById('nodeIdDisplay').innerText = nodeId;
+<script>
+const baseRiddles = [
+{a:"سایہ",e:"👤",q:"روشنی ہو تو میرے وجود کا پتا چلتا ہے، اندھیرا ہو تو میں غائب ہو جاتا ہوں۔ میں خود کوئی جسم نہیں مگر جسم کا نقش ساتھ لیے چلتا ہوں۔"},
+{a:"گونج",e:"🔊",q:"میں آواز نہیں بناتی مگر آواز کے بعد پیدا ہوتی ہوں۔ پہاڑ، خالی کمرہ یا سرنگ مجھے واپس بھیج سکتی ہے۔"},
+{a:"وقت",e:"⏳",q:"مجھ نہ ہاتھ سے پکڑا جا سکتا ہے نہ واپس لایا جا سکتا ہے۔ ہر شخص مجھے خرچ کرتا ہے مگر کوئی مجھے جمع نہیں کر سکتا۔"},
+{a:"عمر",e:"🎂",q:"میں پیدائش کے ساتھ شروع ہوتی ہوں اور ہر گزرتے دن بڑھتی جاتی ہوں۔ مجھے روکا نہیں جا سکتا۔"},
+{a:"نام",e:"🏷️",q:"میں انسان کے ساتھ پیدا نہیں ہوتا مگر دنیا اسے اسی سے پہچانتی ہے۔ مجھے پکارا جائے تو انسان پلٹ کر دیکھ سکتا ہے۔"},
+{a:"خاموشی",e:"🤫",q:"میری موجودگی میں کوئی لفظ سنائی نہیں دیتا، مگر میں خود کوئی آواز نہیں ہوں۔ شور ختم ہوتے ہی میں محسوس ہونے لگتی ہوں۔"},
+{a:"ہوا",e:"💨",q:"میں نظر نہیں آتی مگر درختوں کو ہلا دیتی ہوں۔ مجھے پکڑنے کی کوشش کرو تو ہاتھ خالی رہتے ہیں۔"},
+{a:"روشنی",e:"💡",q:"میرے آنے سے اندھیرا پیچھے ہٹ جاتا ہے۔ میں خود چیز نہیں مگر چیزوں کو دیکھنے کے قابل بناتی ہوں۔"},
+{a:"اندھیرا",e:"🌑",q:"میری اپنی کوئی شکل نہیں۔ روشنی ختم ہو تو میں آتا ہوں اور روشنی واپس آئے تو چلا جاتا ہوں۔"},
+{a:"آئینہ",e:"🪞",q:"میں خود چہرہ نہیں رکھتا مگر تمہیں تمہارا چہرہ دکھاتا ہوں۔ جو میرے سامنے ہو، اس کا عکس میرے اندر نظر آتا ہے۔"},
+{a:"کنگھی",e:"🪮",q:"میرے دانت بہت ہیں مگر میں کھانا نہیں کھاتی۔ سر پر چلتی ہوں مگر درد نہیں دیتی۔"},
+{a:"تولیہ",e:"🧻",q:"میں خود پانی نہیں پیتا مگر گیلا ہونے کے بعد بھیگا ہوا جسم خشک کر دیتا ہوں۔"},
+{a:"چھتری",e:"☂️",q:"بارش میں میرے نیچے جگہ ملتی ہے مگر میرے اندر کوئی گھر نہیں۔ سورج میں بھی میرا کام آتا ہے۔"},
+{a:"قلم",e:"🖊️",q:"میں خود بول نہیں سکتا مگر میرے ذریعے خیالات کاغذ پر بولنے لگتے ہیں۔"},
+{a:"کتاب",e:"📖",q:"میرے اندر بہت سی آوازیں خاموشی سے رہتی ہیں۔ جو پڑھنا جانتا ہے وہ مجھے کھول کر کئی دنیا دیکھ لیتا ہے۔"},
+{a:"گھڑی",e:"⌚",q:"میرے ہاتھ ہوتے ہیں مگر میں کسی کو پکڑ نہیں سکتی۔ میں وقت بتاتی ہوں مگر وقت کو روک نہیں سکتی۔"},
+{a:"کیلنڈر",e:"📅",q:"میرے صفحات دنوں کے حساب سے بدلتے ہیں۔ میں آنے والے دن دکھاتا ہوں مگر انہیں روک نہیں سکتا۔"},
+{a:"دروازہ",e:"🚪",q:"میں خود کہیں نہیں جاتا مگر لوگوں کو ایک جگہ سے دوسری جگہ جانے دیتا ہوں۔ بند ہوں تو راستہ روک دیتا ہوں۔"},
+{a:"کھڑکی",e:"🪟",q:"میں دیوار میں رہتی ہوں مگر دیوار نہیں۔ میرے ذریعے باہر کی دنیا گھر کے اندر دکھائی دیتی ہے۔"},
+{a:"تالا",e:"🔒",q:"میرا کام روکنا ہے۔ صحیح ساتھی کے بغیر میں نہیں کھلتا، مگر وہ ساتھی چابی ہے۔"}
+];
 
-        let seconds = parseInt(localStorage.getItem('se_seconds')) || 0;
-        let points = parseInt(localStorage.getItem('se_points')) || 0;
-        let isMining = false;
-        let isCharging = false;
+let puzzles = [];
+baseRiddles.forEach((r, index) => {
+    puzzles.push({ q: r.q, a: r.a, emoji: r.e, id: index + 1 });
+});
+while(puzzles.length < 1000){
+    const source = baseRiddles[puzzles.length % baseRiddles.length];
+    puzzles.push({ q: "خصوصی چیلنج: " + source.q, a: source.a, emoji: source.emoji, id: puzzles.length + 1 });
+}
 
-        document.getElementById('timer').innerText = seconds + 's';
-        document.getElementById('points').innerText = points;
+let current = 0;
+let score = 0;
+let timer = 10;
+let interval = null;
+let voiceEnabled = true;
+let autoPlayEnabled = true;
 
-        function switchTab(tabName, btnElement) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-            document.getElementById('sec-' + tabName).classList.add('active');
-            btnElement.classList.add('active');
-        }
+const questionEl = document.getElementById("question");
+const answerBox = document.getElementById("answerBox");
+const answerEl = document.getElementById("answer");
+const answerImage = document.getElementById("answerImage");
+const smallTimerEl = document.getElementById("smallTimer");
+const numberEl = document.getElementById("number");
+const scoreEl = document.getElementById("score");
+const progressEl = document.getElementById("progress");
+const voiceBtn = document.getElementById("voiceBtn");
+const autoPlayBtn = document.getElementById("autoPlayBtn");
 
-        // بیٹری چیک سسٹم
-        if ('getBattery' in navigator) {
-            navigator.getBattery().then(function(battery) {
-                evaluateSystem(battery.charging);
-                battery.addEventListener('chargingchange', function() { evaluateSystem(battery.charging); });
-            });
-        } else {
-            evaluateSystem(true);
-        }
+function imageFor(r){
+    const safeAnswer = String(r.a).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="420" viewBox="0 0 600 420"><rect width="600" height="420" rx="30" fill="#f8fafc"/><rect x="20" y="20" width="560" height="380" rx="25" fill="#e2e8f0"/><text x="300" y="190" text-anchor="middle" font-size="110">${r.emoji}</text><text x="300" y="315" text-anchor="middle" font-family="Arial" font-size="40" font-weight="bold" fill="#0f172a">${safeAnswer}</text></svg>`;
+    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+}
 
-        function evaluateSystem(charging) {
-            isCharging = charging;
-            let statusEl = document.getElementById('conditionStatus');
-            let powerBtn = document.getElementById('powerBtn');
-            let btnIcon = document.getElementById('btnIcon');
-            let btnText = document.getElementById('btnText');
+function speak(text, callback){
+    if(!voiceEnabled){ if(callback) callback(); return; }
+    if(!("speechSynthesis" in window)){ if(callback) callback(); return; }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "ur-PK";
+    utterance.rate = 0.85;
+    utterance.onend = function(){ if(callback) callback(); };
+    window.speechSynthesis.speak(utterance);
+}
 
-            if (charging) {
-                statusEl.innerText = "✅ Ready: Charger Connected";
-                statusEl.className = "status-indicator ready";
-                powerBtn.disabled = false;
-                powerBtn.classList.remove('disabled-node');
-                if (!isMining) { btnIcon.innerText = "🔋"; btnText.innerText = "START NODE"; }
-            } else {
-                statusEl.innerText = "❌ Locked: Plug in charger";
-                statusEl.className = "status-indicator";
-                powerBtn.disabled = true;
-                powerBtn.classList.add('disabled-node');
-                btnIcon.innerText = "🔒"; btnText.innerText = "LOCKED";
-                if (isMining) stopMining();
-            }
-        }
+function toggleVoice(){
+    voiceEnabled = !voiceEnabled;
+    if(!voiceEnabled){
+        if("speechSynthesis" in window) window.speechSynthesis.cancel();
+        voiceBtn.textContent = "🔇 آواز OFF";
+        voiceBtn.classList.add("off");
+    }else{
+        voiceBtn.textContent = "🔊 آواز ON";
+        voiceBtn.classList.remove("off");
+    }
+}
 
-        function toggleMining() {
-            if (!isCharging) return;
-            isMining = !isMining;
-            let powerBtn = document.getElementById('powerBtn');
-            let btnIcon = document.getElementById('btnIcon');
-            let btnText = document.getElementById('btnText');
+function toggleAutoPlay(){
+    autoPlayEnabled = !autoPlayEnabled;
+    if(!autoPlayEnabled){
+        autoPlayBtn.textContent = "⏸ آٹو پلے OFF";
+        autoPlayBtn.classList.add("off");
+    }else{
+        autoPlayBtn.textContent = "▶ آٹو پلے ON";
+        autoPlayBtn.classList.remove("off");
+    }
+}
 
-            if (isMining) {
-                powerBtn.classList.add('active-node');
-                btnIcon.innerText = "⚡"; btnText.innerText = "MINING...";
-            } else {
-                stopMining();
-            }
-        }
+function loadPuzzle(){
+    clearInterval(interval);
+    timer = 10;
+    const r = puzzles[current];
+    questionEl.textContent = r.q;
+    answerEl.textContent = r.a;
+    answerImage.src = imageFor(r);
+    answerBox.classList.remove("show");
+    smallTimerEl.textContent = timer;
+    numberEl.textContent = (current + 1) + " / " + puzzles.length;
+    scoreEl.textContent = score;
+    progressEl.style.width = "100%";
 
-        function stopMining() {
-            isMining = false;
-            let powerBtn = document.getElementById('powerBtn');
-            let btnIcon = document.getElementById('btnIcon');
-            let btnText = document.getElementById('btnText');
-            powerBtn.classList.remove('active-node');
-            btnIcon.innerText = "🔋"; btnText.innerText = "START NODE";
-        }
+    speak(r.q, () => {
+        interval = setInterval(() => {
+            timer--;
+            smallTimerEl.textContent = timer;
+            progressEl.style.width = ((timer / 10) * 100) + "%";
 
-        // ہر سیکنڈ کا لوپ اور سرور پر ڈیٹا سنک کرنا
-        setInterval(() => {
-            if (isMining && isCharging) {
-                seconds++;
-                document.getElementById('timer').innerText = seconds + 's';
-                if (seconds % 5 === 0) {
-                    points += 1;
-                    document.getElementById('points').innerText = points;
-                }
-                localStorage.setItem('se_seconds', seconds);
-                localStorage.setItem('se_points', points);
-
-                // سرور کو ڈیٹا بھیجنا (یہاں اپنا Render URL لکھیں جب آپ کا سرور لائیو ہو جائے)
-                // fetch('https://your-render-app.onrender.com/sync', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({ node_id: nodeId, points: points, seconds: seconds, status: 'Active' })
-                // }).catch(err => console.log("Sync error"));
+            if(timer <= 0){
+                clearInterval(interval);
+                showAnswer();
             }
         }, 1000);
+    });
+}
 
-        function requestWithdrawal() {
-            let acc = document.getElementById('accountNo').value;
-            if (!acc) { alert("براہ کرم اکاؤنٹ نمبر درج کریں!"); return; }
-            if (points < 50) { alert("کم از کم 50 پوائنٹس درکار ہیں!"); return; }
-            alert("ودڈرا ریکوئست جمع ہو گئی ہے!");
-            points = 0;
-            document.getElementById('points').innerText = points;
-            localStorage.setItem('se_points', points);
-            document.getElementById('accountNo').value = "";
+function showAnswer(){
+    const r = puzzles[current];
+    answerBox.classList.add("show");
+    score++;
+    scoreEl.textContent = score;
+    
+    speak("درست جواب ہے: " + r.a, () => {
+        if(autoPlayEnabled){
+            setTimeout(() => {
+                nextPuzzle();
+            }, 2500);
         }
-    </script>
+    });
+}
+
+function nextPuzzle(){
+    if(current < puzzles.length - 1){ 
+        current++; 
+    } else { 
+        current = 0; // 1000 مکمل ہونے پر دوبارہ شروع سے آغاز
+    }
+    loadPuzzle();
+}
+
+function prevPuzzle(){
+    if(current > 0){ current--; } else { current = puzzles.length - 1; }
+    loadPuzzle();
+}
+
+function randomPuzzle(){
+    current = Math.floor(Math.random() * puzzles.length);
+    loadPuzzle();
+}
+
+function resetGame(){
+    clearInterval(interval);
+    current = 0;
+    score = 0;
+    if("speechSynthesis" in window) speechSynthesis.cancel();
+    loadPuzzle();
+}
+
+function setShort(){ questionEl.style.fontSize = "18px"; questionEl.style.lineHeight = "1.7"; }
+function setLong(){ questionEl.style.fontSize = "23px"; questionEl.style.lineHeight = "2.1"; }
+
+window.onload = () => { loadPuzzle(); };
+</script>
 </body>
 </html>
